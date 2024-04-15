@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class AsyncPostTest {
 
         // Create HTTP request
         Request request = new Request.Builder()
-                .url("https:// example.com/api/data")
+                .url("https://example.com/api/data")
                 .post(requestBody)
                 .build();
 
@@ -47,13 +48,15 @@ public class AsyncPostTest {
 
             @Override
             public void onResponse(Call call, Response response) {
-                // Handle success
-                if (response.isSuccessful()) {
-                    log.info("Data sent successfully");
-                } else {
-                    log.info("Failed to send data: " + response.code());
+                // This will close the ResponseBody
+                try (ResponseBody responseBody = response.body()) {
+                    // Handle success
+                    if (response.isSuccessful()) {
+                        log.info("Data sent successfully");
+                    } else {
+                        log.info("Failed to send data: " + response.code());
+                    }
                 }
-                response.close();
             }
         });
     }
