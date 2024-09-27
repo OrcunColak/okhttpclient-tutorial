@@ -46,7 +46,10 @@ class GetTest {
                     assert responseBody != null;
                     MediaType mediaType = responseBody.contentType();
                     assert mediaType != null;
-                    log.info(mediaType.toString());
+                    log.info("MediaType : {}", mediaType.toString());
+
+                    // Print the response body
+                    log.info("ResponseBody : {}", responseBody.string());
                 }
             }
         }
