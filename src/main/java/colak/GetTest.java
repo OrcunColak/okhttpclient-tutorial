@@ -2,6 +2,7 @@ package colak;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -31,17 +32,22 @@ class GetTest {
         // To avoid the message below close the Response. Closing Response closes the underlying ResponseBody
         // A connection to http://localhost:34496/ was leaked. Did you forget to close a response body?
         try (Response response = call.execute()) {
-            ResponseBody responseBody = response.body();
-            assert responseBody != null;
 
-            int code = response.code();
-            log.info("Code : {}", code);
+            // This is just to show that even if we close ResponseBody one more time it is harmless
+            try (ResponseBody responseBody = response.body()) {
+                int code = response.code();
+                log.info("Code : {}", code);
 
-            if (!response.isSuccessful()) {
-                log.info("response is not successful");
-            } else {
-                // text/html; charset=ISO-8859-1
-                log.info(responseBody.contentType().toString());
+                if (!response.isSuccessful()) {
+                    log.info("response is not successful");
+                } else {
+
+                    // text/html; charset=ISO-8859-1
+                    assert responseBody != null;
+                    MediaType mediaType = responseBody.contentType();
+                    assert mediaType != null;
+                    log.info(mediaType.toString());
+                }
             }
         }
     }
